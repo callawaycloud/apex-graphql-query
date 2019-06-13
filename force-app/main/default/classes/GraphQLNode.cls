@@ -1,13 +1,19 @@
 public class GraphQLNode {
-    public String name;
-    public Boolean typeFrament; // transforms to "...on {NAME} {"
+    public String id;
+    public Boolean typeFrament; // transforms to "...on {id} {"
     public GraphQLArgument arg; //not sure this supports all use cases... might need to be GraphQLArgument | GraphQLArgument[]
     public Object[] children; //object or other nodes
 
-    public GraphQLNode(String name){
+    public GraphQLNode(String id){
         this.typeFrament = false;
         this.children = new Object[]{};
-        this.name = name;
+        this.id = id;
+    }
+
+    //returns the current node
+    public GraphQLNode setId(String id){
+        this.id = id;
+        return this;
     }
 
     //returns the current node
@@ -32,9 +38,9 @@ public class GraphQLNode {
     }
 
     private string buildInner(){
-        String qry = this.name;
+        String qry = this.id;
         if(this.typeFrament){
-            qry = '... on ' + this.name;
+            qry = '... on ' + this.id;
         }
         
         if(this.arg != null){
