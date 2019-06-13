@@ -33,7 +33,7 @@ String qry = human.build();
 
 ## Deployment
 
-Choose your Adventure:
+Choose your own Adventure:
 
 ### A: Unlocked Package Install
 
