@@ -4,14 +4,14 @@ public class GraphQLQueryTests {
     @isTest
     private static void readmeExample(){
         GraphQLNode human = new GraphQLNode('human')
-        .setArguments(new GraphQLArgument('id', '1000'))
+        .addArguments(new GraphQLArgument('id', '1000'))
         .add(new Object[]{
             'name',
             'height',
             new GraphQLNode('address')
                 .add(new Object[]{ 'city', 'country' })
         });
-        String qry = human.build();
+        GraphQLQuery qry = new GraphQLQuery(human, null);
     }
 
 
@@ -23,11 +23,34 @@ public class GraphQLQueryTests {
     }
 
     @isTest
-    private static void testSimpleNodeInput(){
+    private static void testSimpleArgs(){
         GraphQLNode n = new GraphQLNode('hello')
-        .setArguments(new GraphQLArgument('key', 'value'))
+        .addArguments(new GraphQLArgument('key', 'value'))
         .add('world');
         System.assertEquals('hello(key:\"value\"){world}', n.build().deleteWhitespace());
+    }
+
+    @isTest
+    private static void testChildArgs(){
+        GraphQLNode n = new GraphQLNode('hello')
+        .addArguments(new GraphQLArgument('input', new GraphQLArgument[]{
+            new GraphQLArgument('key1', 'value1'),
+            new GraphQLArgument('key2', 'value2')
+        }))
+        .add('world');
+        System.assertEquals('hello(input:{key1:\"value1\", key2:\"value2\"}){world}', n.build().remove('\n'));
+    }
+
+    @isTest
+    private static void testMultipleTopLevelArgs(){
+        GraphQLNode n = new GraphQLNode('hero')
+            .addArguments(new GraphQLArgument[]{ 
+                new GraphQLArgument('episode', 'EMPIRE', true),
+                new GraphQLArgument('robot', true)
+            })
+            .add('name');
+        
+        System.assertEquals('hero(episode:EMPIRE, robot:true){name}', n.build().remove('\n'));
     }
 
     @isTest
@@ -55,11 +78,11 @@ public class GraphQLQueryTests {
         GraphQLNode[] nodes = new GraphQLNode[]{
              new GraphQLNode('hero')
             .setAlias('empireHero')
-            .setArguments(new GraphQLArgument('episode', 'EMPIRE', true))
+            .addArguments(new GraphQLArgument('episode', 'EMPIRE', true))
             .add('name'),
             new GraphQLNode('hero')
             .setAlias('jediHero')
-            .setArguments(new GraphQLArgument('episode', 'JEDI', true))
+            .addArguments(new GraphQLArgument('episode', 'JEDI', true))
             .add('name')
         };
         

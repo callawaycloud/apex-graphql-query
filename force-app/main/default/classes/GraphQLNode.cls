@@ -2,11 +2,12 @@ public class GraphQLNode {
     public String id;
     public Boolean typeFrament; // transforms to "...on {id} {"
     public String alias;
-    public GraphQLArgument arg; //not sure this supports all use cases... might need to be GraphQLArgument | GraphQLArgument[]
+    public GraphQLArgument[] args; //not sure this supports all use cases... might need to be GraphQLArgument | GraphQLArgument[]
     public Object[] children; //object or other nodes
 
     public GraphQLNode(String id){
         this.typeFrament = false;
+        this.args = new GraphQLArgument[]{};
         this.children = new Object[]{};
         this.id = id;
     }
@@ -24,8 +25,13 @@ public class GraphQLNode {
     }
 
     //returns the current node
-    public GraphQLNode setArguments(GraphQLArgument arg){
-        this.arg = arg;
+    public GraphQLNode addArguments(GraphQLArgument arg){
+        this.args.add(arg);
+        return this;
+    }
+
+    public GraphQLNode addArguments(GraphQLArgument[] args){
+        this.args.addAll(args);
         return this;
     }
 
@@ -52,9 +58,14 @@ public class GraphQLNode {
             qry = this.alias + ': ' + qry;
         }
         
-        if(this.arg != null){
-            qry += '(' + this.arg.build() + ')';
+        if(this.args.size() > 0){
+            String[] argsStrings = new String[]{};
+            for(GraphQLArgument arg : this.args){
+                argsStrings.add(arg.build());
+            }
+            qry += '(' + String.join(argsStrings, ', ') + ')';
         }
+        
         qry += '{\n';
         for(Object child : this.children){
             if(child instanceOf GraphQLNode){
