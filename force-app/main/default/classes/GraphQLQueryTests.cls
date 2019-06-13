@@ -19,7 +19,7 @@ public class GraphQLQueryTests {
     private static void simpleNode(){
         GraphQLNode n = new GraphQLNode('hello')
         .add('world');
-        System.assertEquals('{hello{world}}', n.build().deleteWhitespace());
+        System.assertEquals('hello{world}', n.build().deleteWhitespace());
     }
 
     @isTest
@@ -27,7 +27,7 @@ public class GraphQLQueryTests {
         GraphQLNode n = new GraphQLNode('hello')
         .setArguments(new GraphQLArgument('key', 'value'))
         .add('world');
-        System.assertEquals('{hello(key:\"value\"){world}}', n.build().deleteWhitespace());
+        System.assertEquals('hello(key:\"value\"){world}', n.build().deleteWhitespace());
     }
 
     @isTest
@@ -36,7 +36,7 @@ public class GraphQLQueryTests {
         .add(
             new GraphQLNode('hello').add('world')
         );
-        System.assertEquals('{message{hello{world}}}', n.build().deleteWhitespace());
+        System.assertEquals('message{hello{world}}', n.build().deleteWhitespace());
     }
 
     @isTest
@@ -47,7 +47,24 @@ public class GraphQLQueryTests {
             .setTypeFragment(true)
             .add('x')
         });
-        System.assertEquals('{foo{... on bar{x}}}', n.build().remove('\n'));
+        System.assertEquals('foo{... on bar{x}}', n.build().remove('\n'));
+    }
+
+    @isTest
+    private static void testAlias(){
+        GraphQLNode[] nodes = new GraphQLNode[]{
+             new GraphQLNode('hero')
+            .setAlias('empireHero')
+            .setArguments(new GraphQLArgument('episode', 'EMPIRE', true))
+            .add('name'),
+            new GraphQLNode('hero')
+            .setAlias('jediHero')
+            .setArguments(new GraphQLArgument('episode', 'JEDI', true))
+            .add('name')
+        };
+        
+        GraphQLQuery qry = new GraphQLQuery(nodes, null);
+        System.assertEquals('{empireHero: hero(episode:EMPIRE){name}jediHero: hero(episode:JEDI){name}}', qry.query.remove('\n'));
     }
 
     private class TestVariables {

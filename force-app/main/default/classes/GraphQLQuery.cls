@@ -7,9 +7,28 @@ public class GraphQLQuery {
     }
 
     public GraphQLQuery(GraphQLNode node, Object variables){
-        this.query = node.build();
+        this.query = buildQuery(node);
         if(variables != null){
             this.variables = JSON.serialize(variables);
         }
+    }
+
+    public GraphQLQuery(GraphQLNode[] nodes, Object variables){
+        this.query = buildQuery(nodes);
+        if(variables != null){
+            this.variables = JSON.serialize(variables);
+        }
+    }
+
+    private static string buildQuery(GraphQLNode node){
+        return '{\n' + node.build() + '\n}';
+    }
+
+    private static string buildQuery(GraphQLNode[] nodes){
+        String[] nodeStrings = new String[]{};
+        for(GraphQLNode node : nodes){
+            nodeStrings.add(node.build());
+        }
+        return '{\n' + String.join(nodeStrings, '\n') + '\n}';
     }
 }
