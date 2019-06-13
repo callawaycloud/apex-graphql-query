@@ -1,6 +1,6 @@
 # apex-graphql-query
 
-A simple library for building GraphQL queries.  Currently only offers parital support.
+A simple library for building GraphQL queries in Salesforce's Apex Language.  *Currently only offers parital support.*
 
 ## Example:
 
@@ -17,7 +17,7 @@ A simple library for building GraphQL queries.  Currently only offers parital su
 }
 ```
 
-**Apex**
+**Equivalent Apex**
 
 ``` java
 GraphQLNode human = new GraphQLNode('human')
