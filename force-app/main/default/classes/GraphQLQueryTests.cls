@@ -90,6 +90,38 @@ public class GraphQLQueryTests {
         System.assertEquals('{empireHero: hero(episode:EMPIRE){name}jediHero: hero(episode:JEDI){name}}', qry.query.remove('\n'));
     }
 
+
+    
+    // mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {
+    //     createReview(episode: $ep, review: $review) {
+    //         stars
+    //         commentary
+    //     }
+    // }
+    @isTest
+    private static void testOperation(){
+        GraphQLNode node = new GraphQLNode('CreateReviewForEpisode')
+            .setOperation('mutation')
+            .addArguments(new GraphQLArgument('$ep', 'Episode!', true))
+            .addArguments(new GraphQLArgument('$review', 'ReviewInput!', true))
+            .add(
+                new GraphQLNode('createReview')
+                .addArguments(new GraphQLArgument[]{
+                    new GraphQLArgument('episode', '$ep', true),
+                    new GraphQLArgument('review', '$review', true)
+                })
+                .add(new Object[]{'stars', 'commentary'})
+            );
+        
+        TestVariables test = new TestVariables();
+        GraphQLQuery qry = new GraphQLQuery(node, test);
+        System.assertEquals(
+            'mutation CreateReviewForEpisode($ep:Episode!, $review:ReviewInput!){ createReview(episode:$ep, review:$review){ stars commentary } }', 
+            qry.query.replace('\n', ' ').trim()
+        );
+    }
+
+
     private class TestVariables {
         public String foo;
         public Decimal bar;

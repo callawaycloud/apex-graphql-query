@@ -1,26 +1,25 @@
 public class GraphQLQuery {
     public string query;
-    public string variables;
-    public GraphQLQuery(string query, string variables){
+    public Object variables;
+    public GraphQLQuery(string query, Object variables){
         this.query = query;
         this.variables = variables;
     }
 
     public GraphQLQuery(GraphQLNode node, Object variables){
         this.query = buildQuery(node);
-        if(variables != null){
-            this.variables = JSON.serialize(variables);
-        }
+        this.variables = variables;
     }
 
     public GraphQLQuery(GraphQLNode[] nodes, Object variables){
         this.query = buildQuery(nodes);
-        if(variables != null){
-            this.variables = JSON.serialize(variables);
-        }
+        this.variables = variables;
     }
 
     private static string buildQuery(GraphQLNode node){
+        if(node.operation != null){
+            return node.build();
+        }
         return '{\n' + node.build() + '\n}';
     }
 

@@ -1,9 +1,11 @@
 public class GraphQLNode {
     public String id;
+    public String operation; //optional query, mutation, subscription
     public Boolean typeFrament; // transforms to "...on {id} {"
     public String alias;
     public GraphQLArgument[] args; //not sure this supports all use cases... might need to be GraphQLArgument | GraphQLArgument[]
     public Object[] children; //object or other nodes
+    
 
     public GraphQLNode(String id){
         this.typeFrament = false;
@@ -15,6 +17,12 @@ public class GraphQLNode {
     //returns the current node
     public GraphQLNode setId(String id){
         this.id = id;
+        return this;
+    }
+
+    //returns the current node
+    public GraphQLNode setOperation(String operation){
+        this.operation = operation;
         return this;
     }
 
@@ -52,7 +60,12 @@ public class GraphQLNode {
 
     public string build(){
         String qry = this.id;
-        if(this.typeFrament){
+
+        //we should probably refactor to different classes
+        //which all extend GraphQlNode (OperationNode, FragmentNode, etc)
+        if(operation != null){
+            qry = operation + ' ' +  qry;
+        }else if(this.typeFrament){
             qry = '... on ' + this.id;
         }else if(this.alias != null){
             qry = this.alias + ': ' + qry;
