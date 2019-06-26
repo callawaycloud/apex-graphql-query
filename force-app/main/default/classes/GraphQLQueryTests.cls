@@ -1,78 +1,156 @@
+// Tests using modified examples from https://graphql.org/learn/queries/
 @isTest
 public class GraphQLQueryTests {
 
-    @isTest
-    private static void readmeExample(){
-        GraphQLNode human = new GraphQLNode('human')
-        .addArguments(new GraphQLArgument('id', '1000'))
-        .add(new Object[]{
-            'name',
-            'height',
-            new GraphQLNode('address')
-                .add(new Object[]{ 'city', 'country' })
-        });
-        GraphQLQuery qry = new GraphQLQuery(human, null);
-    }
-
-
+    // {
+    //   hero {
+    //     name
+    //   }
+    // }
     @isTest
     private static void simpleNode(){
-        GraphQLNode n = new GraphQLNode('hello')
-        .add('world');
-        System.assertEquals('hello{world}', n.build().deleteWhitespace());
+        GraphQLNode node = new GraphQLNode('hero')
+        .add('name');
+        GraphQLQuery qry = new GraphQLQuery(node, null);
+        System.assertEquals('{hero{name}}', qry.query.deleteWhitespace());
     }
 
+    // {
+    //   hero(name: "luke skywalker") {
+    //     id
+    //   }
+    // }
     @isTest
-    private static void testSimpleArgs(){
-        GraphQLNode n = new GraphQLNode('hello')
-        .addArguments(new GraphQLArgument('key', 'value'))
-        .add('world');
-        System.assertEquals('hello(key:\"value\"){world}', n.build().deleteWhitespace());
+    private static void testStringArg(){
+        GraphQLNode node = new GraphQLNode('hero')
+        .addArguments(new GraphQLArgument('name', 'luke skywalker'))
+        .add('id');
+        GraphQLQuery qry = new GraphQLQuery(node, null);
+        System.assertEquals('{hero(name:\"luke skywalker\"){id}}', qry.query.remove('\n'));
     }
 
+    // {
+    //   hero(id: 1000) {
+    //     name
+    //   }
+    // }
     @isTest
-    private static void testChildArgs(){
-        GraphQLNode n = new GraphQLNode('hello')
-        .addArguments(new GraphQLArgument('input', new GraphQLArgument[]{
-            new GraphQLArgument('key1', 'value1'),
-            new GraphQLArgument('key2', 'value2')
+    private static void testNumberArg(){
+        GraphQLNode node = new GraphQLNode('hero')
+        .addArguments(new GraphQLArgument('id', 1000))
+        .add('name');
+        GraphQLQuery qry = new GraphQLQuery(node, null);
+        System.assertEquals('{hero(id:1000){name}}', qry.query.remove('\n'));
+    }
+
+    // {
+    //   hero(isJedi: true) {
+    //     name
+    //   }
+    // }
+    @isTest
+    private static void testBooleanArg(){
+        GraphQLNode node = new GraphQLNode('hero')
+        .addArguments(new GraphQLArgument('isJedi', true))
+        .add('name');
+        GraphQLQuery qry = new GraphQLQuery(node, null);
+        System.assertEquals('{hero(isJedi:true){name}}', qry.query.remove('\n'));
+    }
+
+    // {
+    //   hero(episode: EMPIRE) {
+    //     name
+    //   }
+    // }
+    @isTest
+    private static void testStringVariableArg(){
+        GraphQLNode node = new GraphQLNode('hero')
+        .addArguments(new GraphQLArgument('episode', 'EMPIRE', true))
+        .add('name');
+        GraphQLQuery qry = new GraphQLQuery(node, null);
+        System.assertEquals('{hero(episode:EMPIRE){name}}', qry.query.remove('\n'));
+    }
+
+    // {
+    //   hero(attr: {droid: false, weapon: "lightsaber"}) {
+    //     name
+    //   }
+    // }
+    @isTest
+    private static void testNestedArgs(){
+        GraphQLNode node = new GraphQLNode('hero')
+        .addArguments(new GraphQLArgument('attr', new GraphQLArgument[]{
+            new GraphQLArgument('droid', false),
+            new GraphQLArgument('weapon', 'lightsaber')
         }))
-        .add('world');
-        System.assertEquals('hello(input:{key1:\"value1\", key2:\"value2\"}){world}', n.build().remove('\n'));
+        .add('name');
+        GraphQLQuery qry = new GraphQLQuery(node, null);
+        System.assertEquals('{hero(attr:{droid:false, weapon:\"lightsaber\"}){name}}', qry.query.remove('\n'));
     }
 
+    // {
+    //   hero(episode: EMPIRE, dies: true}) {
+    //     name
+    //   }
+    // }
     @isTest
-    private static void testMultipleTopLevelArgs(){
-        GraphQLNode n = new GraphQLNode('hero')
+    private static void testMultipleArgs(){
+        GraphQLNode node = new GraphQLNode('hero')
             .addArguments(new GraphQLArgument[]{ 
                 new GraphQLArgument('episode', 'EMPIRE', true),
-                new GraphQLArgument('robot', true)
+                new GraphQLArgument('dies', true)
             })
             .add('name');
-        
-        System.assertEquals('hero(episode:EMPIRE, robot:true){name}', n.build().remove('\n'));
+        GraphQLQuery qry = new GraphQLQuery(node, null);
+        System.assertEquals('{hero(episode:EMPIRE, dies:true){name}}', qry.query.remove('\n'));
     }
 
+    // {
+    //   hero {
+    //     attr {
+    //        weapon
+    //     }
+    //   }
+    // }
     @isTest
-    private static void testChildNode(){
-        GraphQLNode n = new GraphQLNode('message')
+    private static void testNestedNode(){
+        GraphQLNode node = new GraphQLNode('hero')
         .add(
-            new GraphQLNode('hello').add('world')
+            new GraphQLNode('attr').add('weapon')
         );
-        System.assertEquals('message{hello{world}}', n.build().deleteWhitespace());
+        GraphQLQuery qry = new GraphQLQuery(node, null);
+        System.assertEquals('{hero{attr{weapon}}}', qry.query.remove('\n'));
     }
 
+    // {
+    //   hero {
+    //     name
+    //     ... on Droid {
+    //        primaryFunction
+    //     }
+    //   }
+    // }
     @isTest
     private static void testChildOnType(){
-        GraphQLNode n = new GraphQLNode('foo')
+        GraphQLNode node = new GraphQLNode('hero')
         .add(new Object[]{
-            new GraphQLNode('bar')
+            'name',
+            new GraphQLNode('Droid')
             .setTypeFragment(true)
-            .add('x')
+            .add('primaryFunction')
         });
-        System.assertEquals('foo{... on bar{x}}', n.build().remove('\n'));
+        GraphQLQuery qry = new GraphQLQuery(node, null);
+        System.assertEquals('{hero{name... on Droid{primaryFunction}}}', qry.query.remove('\n'));
     }
 
+    // {
+    //   empireHero: hero(episode: EMPIRE) {
+    //     name
+    //   }
+    //   jediHero: hero(episode: JEDI) {
+    //     name
+    //   }
+    // }
     @isTest
     private static void testAlias(){
         GraphQLNode[] nodes = new GraphQLNode[]{
@@ -98,6 +176,14 @@ public class GraphQLQueryTests {
     //         commentary
     //     }
     // }
+    // == Variables ==
+    // {
+    //   "ep": "JEDI",
+    //   "review": {
+    //     "stars": 5,
+    //     "commentary": "This is a great movie!"
+    //   }
+    // }
     @isTest
     private static void testOperation(){
         GraphQLNode node = new GraphQLNode('CreateReviewForEpisode')
@@ -113,17 +199,30 @@ public class GraphQLQueryTests {
                 .add(new Object[]{'stars', 'commentary'})
             );
         
-        TestVariables test = new TestVariables();
-        GraphQLQuery qry = new GraphQLQuery(node, test);
+        CreateReviewForEpisode createReviewVariables = new CreateReviewForEpisode();
+        createReviewVariables.ep = 'JEDI';
+        createReviewVariables.review = new Review();
+        createReviewVariables.review.stars = 5;
+        createReviewVariables.review.commentary = 'This is a great movie!';
+        GraphQLQuery qry = new GraphQLQuery(node, createReviewVariables);
+        String payload = JSON.serialize(qry);
         System.assertEquals(
-            'mutation CreateReviewForEpisode($ep:Episode!, $review:ReviewInput!){ createReview(episode:$ep, review:$review){ stars commentary } }', 
-            qry.query.replace('\n', ' ').trim()
+            '{"variables":{"review":{"stars":5,"commentary":"This is a great movie!"},"ep":"JEDI"},"query":"mutation CreateReviewForEpisode($ep:Episode!, $review:ReviewInput!){\\ncreateReview(episode:$ep, review:$review){\\nstars\\ncommentary\\n}\\n}\\n"}',
+            payload
         );
     }
 
-
-    private class TestVariables {
-        public String foo;
-        public Decimal bar;
+    /* DTO for testOperation mutation test */
+    public class CreateReviewForEpisode
+    {
+        public String ep { get; set; }
+        public Review review { get; set; }
     }
+
+    public class Review
+    {
+        public Integer stars { get; set; }
+        public String commentary { get; set; }
+    }
+
 }
