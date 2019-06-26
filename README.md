@@ -102,17 +102,17 @@ String payload = JSON.serialize(qry);
 
 See [Unit Tests](https://github.com/ChuckJonas/apex-graphql-query/blob/master/force-app/main/default/classes/GraphQLQueryTests.cls) for more usage examples.
 
-## Deployment
+## Installation
 
 Choose your own Adventure:
 
 ### A: Unlocked Package Install
 
-  via URL: [/packaging/installPackage.apexp?p0=04t0H000000p2qlQAA](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t0H000000p2qlQAA)
+  - via URL: [/packaging/installPackage.apexp?p0=04t0H000000p2qlQAA](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t0H000000p2qlQAA)
   
   **OR**
   
-  via sfdx-cli: `sfdx force:package:install --wait 10 --publishwait 10 --package 04t0H000000p2qlQAA --noprompt -u you@yourorg`
+  - via sfdx-cli: `sfdx force:package:install --wait 10 --publishwait 10 --package 04t0H000000p2qlQAA --noprompt -u you@yourorg`
 
 ### B: From Source
 
