@@ -1,4 +1,4 @@
-public class GraphQLArgument{
+public virtual class GraphQLArgument{
     public String name;
     public Object value; //string | GraphQLArgument | GraphQLArgument[]
     public Boolean isVariable;
@@ -15,7 +15,7 @@ public class GraphQLArgument{
         this.isVariable = isVariable;
     }
 
-    public string build(){
+    public virtual string build(){
         String qry = this.name + ':';
         if(isVariable || this.value instanceOf Integer || this.value instanceOf Decimal || this.value instanceOf Boolean){
             qry += String.valueOf(this.value);

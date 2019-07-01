@@ -1,4 +1,4 @@
-public class GraphQLNode {
+public virtual class GraphQLNode {
     public String id;
     public String operation; //optional query, mutation, subscription
     public Boolean typeFrament; // transforms to "...on {id} {"
@@ -58,7 +58,7 @@ public class GraphQLNode {
         return this;
     }
 
-    public string build(){
+    public virtual string build(){
         String qry = this.id;
 
         //we should probably refactor to different classes
@@ -78,16 +78,17 @@ public class GraphQLNode {
             }
             qry += '(' + String.join(argsStrings, ', ') + ')';
         }
-        
-        qry += '{\n';
-        for(Object child : this.children){
-            if(child instanceOf GraphQLNode){
-                qry += ((GraphQLNode) child).build();
-            }else{
-                 qry += ((String) child) + '\n';
+        if(this.children.size() > 0){
+            qry += '{\n';
+            for(Object child : this.children){
+                if(child instanceOf GraphQLNode){
+                    qry += ((GraphQLNode) child).build();
+                }else{
+                    qry += ((String) child) + '\n';
+                }
             }
+            qry += '}\n';
         }
-        qry += '}\n';
         return qry;
     }
 

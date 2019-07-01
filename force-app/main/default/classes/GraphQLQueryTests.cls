@@ -7,13 +7,22 @@ public class GraphQLQueryTests {
     //     name
     //   }
     // }
+
     @isTest
-    private static void simpleNode(){
+    private static void simpleNode2(){
+        GraphQLNode node = new GraphQLNode('ping');
+        GraphQLQuery qry = new GraphQLQuery(node, null);
+        System.assertEquals('{ping}', qry.query.deleteWhitespace());
+    }
+
+    @isTest
+    private static void nodeWithChild(){
         GraphQLNode node = new GraphQLNode('hero')
         .add('name');
         GraphQLQuery qry = new GraphQLQuery(node, null);
         System.assertEquals('{hero{name}}', qry.query.deleteWhitespace());
     }
+
 
     // {
     //   hero(name: "luke skywalker") {
