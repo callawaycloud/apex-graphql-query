@@ -12,9 +12,7 @@
     "sfdcLoginUrl": "https://login.salesforce.com",
     "sourceApiVersion": "45.0",
     "packageAliases": {
-        "GraphQLQuery": "0Ho0H000000000zSAA",
-        "GraphQLQuery@0.1.0-1": "04t0H000000p2qlQAA",
-        "GraphQLQuery@0.1.0-2": "04t0H000000p2s8QAA",
-        "GraphQLQuery@0.2.0-1": "04t0H000000p2sDQAQ"
+        "GraphQLQuery": "0Ho1C0000004CABSA2",
+        "GraphQLQuery@0.2.0-1": "04t1C000000tfGqQAI"
     }
 }

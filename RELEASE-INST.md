@@ -3,13 +3,13 @@
 ## Create Package
 
 Only one time. Skip for updates
-`sfdx force:package:create -n GraphQLQuery -d "Library for building GraphQL Queries" -r force-app -t Unlocked -v dev-hub`
+`sfdx force:package:create -n GraphQLQuery -d "Library for building GraphQL Queries" -r force-app -t Unlocked -v ccc-prod`
 
 ## Release Update
 
 - Create version
 1. Update `versionName` & `versionNumber` in `sfdx-project.json`
-2. run `sfdx force:package:version:create -p GraphQLQuery -d force-app -x --wait 10 -v dev-hub`
+2. run `sfdx force:package:version:create -p GraphQLQuery -d force-app -x --wait 10 -v ccc-prod`
 
 - "promote" Version
 
