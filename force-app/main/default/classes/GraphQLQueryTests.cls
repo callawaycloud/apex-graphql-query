@@ -2,19 +2,22 @@
 @isTest
 public class GraphQLQueryTests {
 
-    // {
-    //   hero {
-    //     name
-    //   }
-    // }
 
+    // {
+    //   ping
+    // }
     @isTest
-    private static void simpleNode2(){
+    private static void node(){
         GraphQLNode node = new GraphQLNode('ping');
         GraphQLQuery qry = new GraphQLQuery(node, null);
         System.assertEquals('{ping}', qry.query.deleteWhitespace());
     }
 
+    // {
+    //   hero {
+    //     name
+    //   }
+    // }
     @isTest
     private static void nodeWithChild(){
         GraphQLNode node = new GraphQLNode('hero')
