@@ -2,7 +2,6 @@
 @isTest
 public class GraphQLQueryTests {
 
-
     // {
     //   ping
     // }
