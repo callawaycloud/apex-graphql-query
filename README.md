@@ -2,12 +2,13 @@
 
 A simple library for building GraphQL queries in Salesforce's Apex Language.
 
-*some use cases still not supported*
+_some use cases still not supported_
 
 ## Examples:
 
 ### Query
-``` graphql
+
+```graphql
 {
   human(id: "1000") {
     name
@@ -22,7 +23,7 @@ A simple library for building GraphQL queries in Salesforce's Apex Language.
 
 **Equivalent Apex**
 
-``` java
+```java
 GraphQLNode human = new GraphQLNode('human')
 .setArguments(new GraphQLArgument('id', '1000'))
 .add(new Object[]{
@@ -39,7 +40,7 @@ System.debug(qry.query);
 
 ### Operations
 
-``` graphql
+```graphql
 mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {
   createReview(episode: $ep, review: $review) {
     stars
@@ -48,7 +49,7 @@ mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {
 }
 ```
 
-``` json
+```json
 {
   "ep": "JEDI",
   "review": {
@@ -59,7 +60,8 @@ mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {
 ```
 
 **Equivalent Apex**
-``` java
+
+```java
 
 //Variable DTOs
 public class CreateReviewForEpisode{
@@ -96,8 +98,9 @@ createReviewVariables.review.commentary = 'This is a great movie!';
 GraphQLQuery qry = new GraphQLQuery(node, createReviewVariables);
 String payload = JSON.serialize(qry);
 
-//... POST payload to graphQL service endpoint 
+//... POST payload to graphQL service endpoint
 ```
+
 ### Additional Usage
 
 See [Unit Tests](https://github.com/ChuckJonas/apex-graphql-query/blob/master/force-app/main/default/classes/GraphQLQueryTests.cls) for more usage examples.
@@ -108,11 +111,11 @@ Choose your own Adventure:
 
 ### A: Unlocked Package Install
 
-  - via URL: [/packaging/installPackage.apexp?p0=04t1C000000tfGqQAI](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t1C000000tfGqQAI)
-  
-  **OR**
-  
-  - via sfdx-cli: `sfdx force:package:install --wait 10 --publishwait 10 --package 04t1C000000tfGqQAI --noprompt -u you@yourorg`
+- via URL: [/packaging/installPackage.apexp?p0=04t1C000000tfGqQAI](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t1C000000tfGqQAI)
+
+**OR**
+
+- via sfdx-cli: `sfdx force:package:install --wait 10 --publishwait 10 --package 04t1C000000tfGqQAI --noprompt -u you@yourorg`
 
 ### B: From Source
 
